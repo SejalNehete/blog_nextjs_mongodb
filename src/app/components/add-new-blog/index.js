@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-function AddNewBlog({ OpenBlog, setOpenBlog, blogFormData, Loading, setLoading, handleSaveBlogData, setblogFormData }) {
+function AddNewBlog({ setcurrentEditedblogid,currentEditedblogid,OpenBlog, setOpenBlog, blogFormData, Loading, setLoading, handleSaveBlogData, setblogFormData }) {
     return (
         <div className=" bg-gradient-to-r from-purple-700 to-blue-600 p-6">
             <div>
@@ -24,11 +24,12 @@ function AddNewBlog({ OpenBlog, setOpenBlog, blogFormData, Loading, setLoading, 
                     title: "",
                     description: ""
                 })
+                setcurrentEditedblogid("")
             }}>
 
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Add New Blog</DialogTitle>
+                        <DialogTitle>{currentEditedblogid? "Edit blog":"Add New Blog"}</DialogTitle>
 
                     </DialogHeader>
                     <div className="grid gap-4 py-4">

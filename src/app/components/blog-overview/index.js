@@ -29,24 +29,36 @@ const BlogOverview = ({ blogList }) => {
     const [OpenBlog, setOpenBlog] = useState(false)
     const [Loading, setLoading] = useState(false)
     const [blogFormData, setblogFormData] = useState(initialBlogFormData)
+    const [currentEditedblogid, setcurrentEditedblogid] = useState(null)
     const router = useRouter();
     useEffect(() => {
         router.refresh()
     }, [])
 
+
+    //add new blog
     async function handleSaveBlogData() {
         try {
             setLoading(true)
-            const apiResponse = await fetch('/api/add-blog', {
-                method: "POST",
-                body: JSON.stringify(blogFormData)
-            })
+            const apiResponse =
+                currentEditedblogid == null ?
+                    awaitfetch('/api/add-blog', {
+                        method: "POST",
+                        body: JSON.stringify(blogFormData)
+                    })
+                    : await fetch(`/api/update-blog?id=${currentEditedblogid}`,
+                         { method: "PUT", body: JSON.stringify(blogFormData) 
+
+                    })
+
+
             const result = await apiResponse.json()
             console.log(result)
             if (result.success) {
                 setblogFormData(initialBlogFormData)
                 setOpenBlog(false)
                 setLoading(false)
+                setcurrentEditedblogid(null)
                 router.refresh()
 
             }
@@ -56,20 +68,33 @@ const BlogOverview = ({ blogList }) => {
             setblogFormData(initialBlogFormData)
         }
     }
-    async function handleDeleteBlog(id){
-        try{
-            const apiResponse= await fetch(`/api/delete-blog?id=${id}`,{method:'DELETE'})
-            const result=await apiResponse.json();
-            if(result.success){
+
+
+    //delete blog
+    async function handleDeleteBlog(id) {
+        try {
+            const apiResponse = await fetch(`/api/delete-blog?id=${id}`, { method: 'DELETE' })
+            const result = await apiResponse.json();
+            if (result.success) {
                 router.refresh()
             }
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
+
+
+    //edit blog
+    async function handleEditBlog(blog) {
+        setcurrentEditedblogid(blog._id)
+        console.log("id", currentEditedblogid)
+        setblogFormData({ title: blog.title, description: blog.description })
+        setOpenBlog(true)
+
+    }
     return (
         <div className="min-h-screen bg-gradient-to-r from-purple-700 to-blue-600 p-6">
-            <AddNewBlog OpenBlog={OpenBlog} handleSaveBlogData={handleSaveBlogData} setOpenBlog={setOpenBlog} Loading={Loading} setLoading={setLoading} setblogFormData={setblogFormData} blogFormData={blogFormData} />
+            <AddNewBlog setcurrentEditedblogid={setcurrentEditedblogid} currentEditedblogid={currentEditedblogid} OpenBlog={OpenBlog} handleSaveBlogData={handleSaveBlogData} setOpenBlog={setOpenBlog} Loading={Loading} setLoading={setLoading} setblogFormData={setblogFormData} blogFormData={blogFormData} />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {
                     blogList && blogList.length > 0 ?
@@ -80,8 +105,8 @@ const BlogOverview = ({ blogList }) => {
                                 </CardContent>
                                 <CardDescription className="">{blog.description}</CardDescription>
                                 <div className="mt-5 flex gap-5 ">
-                                    <Button>Edit</Button>
-                                    <Button onClick={()=>handleDeleteBlog(blog._id)}>Delete</Button>
+                                    <Button onClick={() => handleEditBlog(blog)}>Edit</Button>
+                                    <Button onClick={() => handleDeleteBlog(blog._id)}>Delete</Button>
                                 </div>
                             </Card>
 
