@@ -31,7 +31,7 @@ export async function PUT(req) {
         if(updateblog){
             return NextResponse.json({
                 success: true,
-                message: "blog update successful"
+                message: "blog update successfully"
             })
         }
 
