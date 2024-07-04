@@ -17,7 +17,7 @@ export async function PUT(req) {
         if(!id){
             return NextResponse.json({
                 success:false,
-                message:"blog id is not presenr"
+                message:"blog id is not present"
             })
         }
         const { title, description } = await req.json()
@@ -31,7 +31,7 @@ export async function PUT(req) {
         if(updateblog){
             return NextResponse.json({
                 success: true,
-                message: "blog update successfully"
+                message: "blog update successful"
             })
         }
 
